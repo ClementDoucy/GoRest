@@ -11,54 +11,61 @@ type User struct {
 	Email    string
 }
 
-func Init() *gorm.DB {
+type Query struct {
+	db *gorm.DB
+}
+
+func NewQuery() *Query {
 	db, err := gorm.Open("sqlite3", "dev.db")
 
 	if err != nil {
-		panic("Error : can't connect to database")
+		panic("Error : can't connect to database dev.db")
 	}
 
 	db.AutoMigrate(&User{})
 
-	return db
+	query := new(Query)
+	query.db = db
+
+	return query
 }
 
-func Destroy(db *gorm.DB) {
-	db.Close()
+func (this *Query) Destroy() {
+	this.db.Close()
 }
 
-func Create(db *gorm.DB, username, email string) User {
+func (this *Query) Create(username, email string) User {
 	user := User{Username: username, Email: email}
 
-	db.Create(&user)
+	this.db.Create(&user)
 	return user
 }
 
-func GetByID(db *gorm.DB, id int) User {
+func (this *Query) GetByID(id int) User {
 	var user User
 
-	db.First(&user, id)
+	this.db.First(&user, id)
 	return user
 }
 
-func GetAll(db *gorm.DB) []User {
+func (this *Query) GetAll() []User {
 	var users []User
 
-	db.Find(&users)
+	this.db.Find(&users)
 	return users
 }
 
-func Update(db *gorm.DB, id int, username, email string) User {
+func (this *Query) Update(id int, username, email string) User {
 	var user User
 	updateMap := map[string]interface{}{"username": username, "email": email}
 
-	db.Model(&user).Where("id = ?", id).Update(updateMap)
+	this.db.Model(&user).Where("id = ?", id).Update(updateMap)
 	return user
 }
 
-func Delete(db *gorm.DB, id int) {
+func (this *Query) Delete(id int) {
 	var user User
 
-	db.First(&user, id)
-	db.Delete(&user)
+	this.db.First(&user, id)
+	this.db.Delete(&user)
 }

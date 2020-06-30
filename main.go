@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	db := database.Init()
-	defer database.Destroy(db)
+	query := database.NewQuery()
+	defer query.Destroy()
 }
