@@ -6,9 +6,9 @@ import (
 )
 
 type User struct {
-	ID       uint `gorm:"primary_key"`
-	Username string
-	Email    string
+	ID       uint   `gorm:"primary_key" json:"id"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
 }
 
 type Query struct {
@@ -60,6 +60,7 @@ func (this *Query) Update(id int, username, email string) User {
 	updateMap := map[string]interface{}{"username": username, "email": email}
 
 	this.db.Model(&user).Where("id = ?", id).Update(updateMap)
+	user.ID = uint(id)
 	return user
 }
 

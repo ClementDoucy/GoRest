@@ -1,10 +1,17 @@
 package main
 
 import (
-	"./database"
+	"fmt"
+
+	"./app"
 )
 
 func main() {
-	query := database.NewQuery()
-	defer query.Destroy()
+	a := app.App{}
+
+	a.Init()
+
+	fmt.Println("Running on http://0.0.0.0:8080")
+
+	a.Run(":8080")
 }
